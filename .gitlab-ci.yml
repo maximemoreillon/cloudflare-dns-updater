@@ -1,0 +1,22 @@
+stages:
+  - build
+
+variables:
+  APPLICATION_NAME: cloudflare-dns-updater
+  CONTAINER_IMAGE_TAGGED: ${DOCKER_HUB_USERNAME}/${APPLICATION_NAME}:${CI_COMMIT_SHORT_SHA}
+
+image: moreillon/ci-dind
+services:
+  - name: docker:24-dind
+
+build:
+  stage: build
+  tags:
+    - dind
+  only:
+    - master
+  before_script:
+    - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin
+  script:
+    - docker build -t ${CONTAINER_IMAGE_TAGGED} .
+    - docker push ${CONTAINER_IMAGE_TAGGED}
