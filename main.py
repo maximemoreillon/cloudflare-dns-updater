@@ -13,26 +13,25 @@ ZONE_ID = environ.get('CLOUDFLARE_ZONE_ID')
 
 ip = requests.get('https://api.ipify.org').content.decode('utf8')
 
+headers = {
+  "X-Auth-Email": EMAIL,
+  "X-Auth-Key": GLOBAL_API_KEY,
+}
+
 
 print(f'Updating DNS record {RECORD_NAME} with IP {ip}')
+
 response = requests.get(
   f'https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records/', 
-  headers={
-    "X-Auth-Email": EMAIL,
-    "X-Auth-Key": GLOBAL_API_KEY,
-  },
+  headers=headers,
 )
 
+# Find record in list
 record = next(item for item in response.json()["result"] if item["name"] == RECORD_NAME)
 
-
-# print(f'Updating DNS record {RECORD_NAME} with IP {ip}')
 response = requests.put(
   f'https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records/{record["id"]}', 
-  headers={
-    "X-Auth-Email": EMAIL,
-    "X-Auth-Key": GLOBAL_API_KEY,
-  }, 
+  headers=headers, 
   json={
     "content": ip,
     "name": RECORD_NAME,
@@ -40,5 +39,6 @@ response = requests.put(
     "proxied": True
   }
 )
+
 print(response.text)
 
