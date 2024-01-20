@@ -19,7 +19,7 @@ headers = {
 }
 
 
-print(f'Updating DNS record {RECORD_NAME} with IP {ip}')
+print(f'Updating DNS record {RECORD_NAME} with IP {ip}...')
 
 response = requests.get(
   f'https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records/', 
@@ -29,7 +29,7 @@ response = requests.get(
 responseJSON = response.json()
 
 if not responseJSON['success']:
-  raise SystemExit(f'DNS update failed: {responseJSON["errors"][0]["message"]}')
+  raise SystemExit(f'Record query failed: {responseJSON["errors"][0]["message"]}')
 
 # Find record in list
 record = next(item for item in responseJSON["result"] if item["name"] == RECORD_NAME)
@@ -45,5 +45,8 @@ response = requests.put(
   }
 )
 
-print(response.text)
+responseJSON = response.json()
+if not responseJSON['success']:
+  raise SystemExit(f'DNS update failed: {responseJSON["errors"][0]["message"]}')
 
+print(f'Updated DNS record {responseJSON["result"]["name"]} with IP {responseJSON["result"]["content"]}')
