@@ -41,7 +41,7 @@ response = requests.put(
     "content": ip,
     "name": RECORD_NAME,
     "type": "A",
-    "proxied": True
+    "proxied": False
   }
 )
 
