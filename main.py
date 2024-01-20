@@ -10,7 +10,9 @@ RECORD_NAME = environ.get('CLOUDFLARE_RECORD_NAME')
 EMAIL = environ.get('CLOUDFLARE_EMAIL')
 GLOBAL_API_KEY = environ.get('CLOUDFLARE_GLOBAL_API_KEY')
 ZONE_ID = environ.get('CLOUDFLARE_ZONE_ID')
+PROXIED = environ.get('CLOUDFLARE_PROXIED')
 
+print(not not PROXIED)
 ip = requests.get('https://api.ipify.org').content.decode('utf8')
 
 headers = {
@@ -41,7 +43,7 @@ response = requests.put(
     "content": ip,
     "name": RECORD_NAME,
     "type": "A",
-    "proxied": False
+    "proxied": not not PROXIED
   }
 )
 
