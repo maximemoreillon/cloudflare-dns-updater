@@ -1,5 +1,11 @@
 # Cloudflare dynamic DNS
 
+## Running
+
+```
+python main.py
+```
+
 ## Environment variables
 
 - CLOUDFLARE_RECORD_NAME

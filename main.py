@@ -26,8 +26,13 @@ response = requests.get(
   headers=headers,
 )
 
+responseJSON = response.json()
+
+if not responseJSON['success']:
+  raise SystemExit(f'DNS update failed: {responseJSON["errors"][0]["message"]}')
+
 # Find record in list
-record = next(item for item in response.json()["result"] if item["name"] == RECORD_NAME)
+record = next(item for item in responseJSON["result"] if item["name"] == RECORD_NAME)
 
 response = requests.put(
   f'https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records/{record["id"]}', 
